@@ -7,17 +7,11 @@
 ///			Right and left key press move the cursor, up and down retrieve previous
 ///			inputs, backspace deletes, and enter returns the input to the callng program.
 ///			Tab key needs to given a list of commands that the user wants to auto fill.
-/// 		
-/// 
-/// Assumptions: 
-/// 
-/// Limitations: 
 ///
-/// @param
 ///---------------------------------------------------------------------------
 
 
-// Constructor for UserInput with no parameters. Initializes index and pastIndex to zero. 
+/// @brief	Constructor for UserInput with no parameters. Initializes index and pastIndex to zero. 
 UserInput::UserInput(){
     index = 0;
     pastIndex = 0;
@@ -25,7 +19,8 @@ UserInput::UserInput(){
     stillOriginalInput = true;
 }
 
-// Constructor for UserInput fro a string. Index initialized to size of input string.
+/// @brief	Constructor for UserInput from a string. Index initialized to size of input string.
+/// @param	input - Input in string form
 UserInput::UserInput(std::string &input){
 	originalInput = input;
     index = input.size();
@@ -34,6 +29,8 @@ UserInput::UserInput(std::string &input){
     stillOriginalInput = true;
 }
 
+/// @brief	Constructor for UserInput from a an previous input. Index initialized to size of input string.
+/// @param	input - input as a UserInput class
 UserInput::UserInput(UserInput &oldInput){
 	originalInput = oldInput.originalInput;
 	index = oldInput.index;
@@ -42,13 +39,13 @@ UserInput::UserInput(UserInput &oldInput){
 	stillOriginalInput = oldInput.stillOriginalInput;
 }
 
-// Destructor
+/// @brief	Destructor
 UserInput::~UserInput(){
 
 }
 
-// Main function of UserInput class, reads incoming user input 
-//and calls corresponding function to handle special cases for user input.
+/// @brief	Main function of UserInput class, reads incoming user input 
+///			and calls corresponding function to handle special cases for user input.
 
 std::string UserInput::ReadingInput(){
 	char c,d,e;
@@ -89,16 +86,16 @@ std::string UserInput::ReadingInput(){
 	return ReturnInput();
 }
 
-// Function to add past inputs into the past input vector.
+/// @brief	Function to add past inputs into the past input vector.
 void UserInput::AddPastInput(){
     pastInputs.push_back(currentInput);
 	pastIndex = pastInputs.size()-1;
 	return;
 }
 
-// Function to retrieve past inputs based on state.
-// If the state is UP key, it will get the next older previous input
-// If the statis is DOWN key, it will get the next newer previous input
+/// @brief	Function to retrieve past inputs based on state.
+/// 		If the state is UP key, it will get the next older previous input
+/// 		If the statis is DOWN key, it will get the next newer previous input
 std::string UserInput::GetPastInput(){
 	std::string tempInput;
 
@@ -115,12 +112,12 @@ std::string UserInput::GetPastInput(){
 	return tempInput;
 }
 
-//Operator over load to convert UserInput to string
+/// @brief	Operator over load to convert UserInput to string
 UserInput::operator std::string(){
 	return currentInput;
 }
 
-// Returns current input and resets the input to an empty string
+/// @brief	Returns current input and resets the input to an empty string
 std::string UserInput::ReturnInput(){
 	std::string temp = currentInput;
 	currentInput = "";
@@ -129,12 +126,14 @@ std::string UserInput::ReturnInput(){
 }
 
 
-// Function that handles the UP key user input
-// If the past index is not at 0 (i.e there are more past inputs)
-	// It will erase the current input and print the retrieved past input.
-	// It also will store the original input, if we are on the original input.
-// If the pastIndex is at 0 and there have been previous past inputs 
-	// It will get the past input, but will not decrement the past input index.
+///--------------------------------------------------------------------------
+/// @brief	Function that handles the UP key user input
+/// 		Case 1: If the past index is not at 0 (i.e there are more past inputs)
+/// 			It will erase the current input and print the retrieved past input.
+/// 			It also will store the original input, if we are on the original input.
+/// 		Case 2: If the pastIndex is at 0 and there have been previous past inputs 
+/// 			It will get the past input, but will not decrement the past input index.
+///--------------------------------------------------------------------------
 void UserInput::UpKey(){
 
 	state = specialKeys::UP;
@@ -181,12 +180,14 @@ void UserInput::UpKey(){
     return;
 }
 
-// Function to handle a down key input
-// If there have been inputs or the past input index is not zero
-	//It will erase the current input, retrieve a newer preivous input, and print it.
-//If the past input index is at the last element of the vector
-	// It will erase the current input, retrieve the original input, and print it.
-	// Then it will set the original input flag to true.
+///--------------------------------------------------------------------------
+/// @brief	Function to handle a down key input
+/// 		Case 1: If there have been inputs or the past input index is not zero or length of input vector
+/// 			It will erase the current input, retrieve a newer preivous input, and print it.
+/// 		Case 2: If the past input index is at the last element of the vector
+/// 		 	It will erase the current input, retrieve the original input, and print it.
+/// 			Then it will set the original input flag to true.
+///--------------------------------------------------------------------------
 void UserInput::DownKey(){
 	state = specialKeys::DOWN;
 
@@ -226,9 +227,9 @@ void UserInput::DownKey(){
     return;
 }
 
-// Function to handle a right key press.
-// Simply moves cursor forward one while,
-// not at the end of input and increments index
+/// @brief	Function to handle a right key press.
+/// 		Simply moves cursor forward one while,
+/// 		not at the end of input and increments index
 void UserInput::RightKey(){
 	state = specialKeys::RIGHT;
 
@@ -239,10 +240,10 @@ void UserInput::RightKey(){
     return;
 }
 
-// Function to handle a left key press.
-// Simply moves cursor back one while,
-// not at the beginning of input and 
-// increments index
+/// @brief	Function to handle a left key press.
+/// 		Simply moves cursor back one while,
+/// 		not at the beginning of input and 
+/// 		increments index
 void UserInput::LeftKey() {
 	state = specialKeys::LEFT;
 
@@ -255,8 +256,8 @@ void UserInput::LeftKey() {
     return;
 }
 
-// Function to handle tab key press
-// Still needs implementation
+/// @brief	Function to handle tab key press
+/// 		still needs implementation
 void UserInput::TabKey(){
 	
 	state = specialKeys::TAB;
@@ -298,8 +299,8 @@ void UserInput::TabKey(){
 	return;
 }
 
-// Function to handle enter key press.
-// Resets index, prints new line, adds input to past input.
+/// @brief	Function to handle enter key press.
+// 			Resets index, prints new line, adds input to past input.
 void UserInput::EnterKey(){
 	state = specialKeys::ENTER;
 	index = 0;
@@ -316,9 +317,9 @@ void UserInput::EnterKey(){
 
 }
 
-// Function to handle a backspace key press.
-// If the input is not empty, it will erase
-// one letter and move the index back one.
+/// @brief	Function to handle a backspace key press.
+/// 		If the input is not empty, it will erase
+/// 		one letter and move the index back one.
 void UserInput::BackspaceKey(){
 	state = specialKeys::BACKSPACE;
 
@@ -341,9 +342,9 @@ void UserInput::BackspaceKey(){
     
 }
 
-// Function to handle a character key
-// It will print the character and save it to input
-// where the index for the current input is.
+/// @brief	Function to handle a character key
+///			It will print the character and save it to input
+/// 		where the index for the current input is.
 void UserInput::CharacterKey(const char c){
 	state = specialKeys::CHAR;
 

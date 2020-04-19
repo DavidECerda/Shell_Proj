@@ -1,6 +1,10 @@
 #include "DirectoryListing.h"
 #include <dirent.h>
 
+///--------------------------------------------------------------------------
+/// @brief	The class handles retrieval of the file names from the user 's devices		
+///---------------------------------------------------------------------------
+
 namespace DirectoryListing{
 
 bool GetListing(const std::string &path, std::vector< std::tuple< std::string, bool > > &entries){
