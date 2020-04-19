@@ -1,8 +1,9 @@
     
-# Project2
-ECS 34 Project 2
-By: David Cerda & Alexander Dunn
-Date: April 29, 2019
+# ShellProject 
+#### C++ Project 2
+#### By: David Cerda & Alexander Dunn
+#### Date: April 29, 2019
+
 
 FileSystemTree Tests: All Pass <3
 main commands: cd works well most of the time but has some odd behavior and segfaulting in some cases, mv is perfect (except if you have root as dest the src just dissapears... woops), mv works but it does't work with renaming, cp works but it doesn't copy data but the added caveat is the the dest must be the full path including what the files name will be (if the dest is just a directory it will mess up), otherwise we are all good B^) 
