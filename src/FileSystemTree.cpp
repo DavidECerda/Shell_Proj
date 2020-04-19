@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 
-// A struct to represent a file or directory name in the file system tree
+/// @brief	A struct to represent a file or directory name in the file system tree
 struct Node {
 	std::weak_ptr< Node > fileParent;
 	std::string fileName;
@@ -13,7 +13,9 @@ struct Node {
 	CFileSystemTree::CEntry fileEntry;
 };
 
-// Used for sorting the children alphabetically
+/// @brief	Compare function for nodes used for sorting the children alphabetically
+/// @param	left - First node to compare
+/// @param	right - Second Node to compare
 bool Compare(std::shared_ptr<Node> left, std::shared_ptr<Node> right) {
 	
 	std::string leftTemp = left->fileName;
@@ -32,37 +34,47 @@ bool Compare(std::shared_ptr<Node> left, std::shared_ptr<Node> right) {
 	return leftName < rightName;
 }
 
-// A struct the owns a pointer to the root node
+/// @brief	A struct the owns a shared pointer to the root node
+///			Adds a layer of abstraction
 struct CFileSystemTree::SImplementation {
 	std::shared_ptr <Node> directoryRoot;	
 };
 
+/// @brief	A struct that owns a weak pointer to a node for each entry
 struct CFileSystemTree::CEntry::SImplementation {
 	std::weak_ptr <Node> cNode;
 };
 
+///	@brief	A struct that owns a shared pointer to a node for each entry and an number for iteration
 struct CFileSystemTree::CEntryIterator::SImplementation {
-	int iter = 0;	//which child index it is on
-	std::shared_ptr <Node> Iptr = nullptr;	//the parent whose children we itterate
+	int iter = 0;	//which child index the iteration is on
+	std::shared_ptr <Node> Iptr = nullptr;	//the parent whose children we iterate
 
 };
 
+///	@brief 	A struct that owns a shared pointer to a node for each entry and an number for iteration for a const/private entry
 struct CFileSystemTree::CConstEntryIterator::SImplementation {
 	int iter = 0;
 	std::shared_ptr <Node> Iptr = nullptr;
 };
 
+/// @brief	CEntry constructor that makes a unique pointer to a SImplementation struct
 CFileSystemTree::CEntry::CEntry() : DImplementation(std::make_unique< SImplementation >()) {
 }
 
+/// @brief	CEntry constructor that makes a unique pointer to a SImplementation struct and inherits from another CEntry class
+/// @param 	CEntry - Class that new class will be made from
 CFileSystemTree::CEntry::CEntry(const CEntry& entry) : DImplementation(std::make_unique< SImplementation >()) {
 	*this = entry;	//copy it
 }
 
+/// @brief destructor
 CFileSystemTree::CEntry::~CEntry() {
 //o-o\\ <- John Lennon
 }
 
+/// @brief	Equals perator overload function
+/// @param	CEntry - entry that class will be set equal to
 CFileSystemTree::CEntry& CFileSystemTree::CEntry::operator=(const CEntry& entry) {
 	if(entry.DImplementation->cNode.lock() != nullptr){
 		DImplementation->cNode = entry.DImplementation->cNode.lock();
@@ -71,10 +83,9 @@ CFileSystemTree::CEntry& CFileSystemTree::CEntry::operator=(const CEntry& entry)
 		
 }
 
-
+/// @brief determines if the entry is a valid
+/// @return true if valid, false if not
 bool CFileSystemTree::CEntry::Valid() const {
-//	std::shared_ptr<Node> CurrentPtr;
-	//it exist or not	
 	if(auto CurrentPtr = DImplementation->cNode.lock()){
 		return true;
 	}
@@ -83,17 +94,19 @@ bool CFileSystemTree::CEntry::Valid() const {
 	}
 }
 
+/// @brief Returns name of the entry
 std::string CFileSystemTree::CEntry::Name() const {
 	//find name, return name
 	auto SptrCurrent = DImplementation->cNode.lock();
 	return SptrCurrent->fileName;
 }
 
+/// @brief Returns the full path to the entry as a string
 std::string CFileSystemTree::CEntry::FullPath() const {
 	std::vector< std::string > temp;
 	auto CurrentPtr = DImplementation->cNode.lock(); //what CEntry we are on
-	//from the current it crawls back until it cannot
-	//find a parent, it adds where ts been in reverse
+	//from the current it crawls up until it cannot
+	//find a parent, it adds names in reverse
 	do{
 		std::string fileName = CurrentPtr->fileName;
 		temp.insert(temp.begin(), fileName);
@@ -102,6 +115,7 @@ std::string CFileSystemTree::CEntry::FullPath() const {
 	
 	//brings it all together with some slashes
 	std::string ret =  StringUtils::Join("/", temp);
+
 	//if full path is called on root just return /
 	if (temp.size()==1){
 		return"/";
@@ -110,7 +124,10 @@ std::string CFileSystemTree::CEntry::FullPath() const {
 	return ret;
 }
 
-//Outline graciously given to use by the TA during Office Hours
+/// @brief	Outline graciously given to use by the TA during Office Hours.
+///			Returns the FileSystemTree as a string and represented as a tree 
+/// @param	curr - Node the the recursion is currently on
+/// @param	ancestor - bool vector that keeps track of the end of a nodes children
 std::string HelperForStr(std::shared_ptr<Node> curr, std::vector<bool> ancestor){
 	std::string ret;	//the returning string
 	if (!ancestor.empty()){
@@ -134,29 +151,22 @@ std::string HelperForStr(std::shared_ptr<Node> curr, std::vector<bool> ancestor)
 	return ret;
 	
 		
-		
+/// @brief Uses HelperForStr to convert the CEntry to a tree in string form
 }
 std::string CFileSystemTree::CEntry::ToString() const{
-	// You code here
-	//std::string ret = this->Name();
-	//if (this->ChildCount() == 0){
-	//	return ret;
-	//}
-	//ret += "\n";
-	//const CEntry* curr = this;
 	std::vector< bool > ancestor;
-	//DepthFirstSearch(0, ret, curr, last);
-	//StringUtils::ExpandTabs(ret, 3);
 	std::string ret = HelperForStr(DImplementation->cNode.lock(),ancestor);
 	ret.pop_back();
 	return ret;
 }
  
+ /// @brief CFileSystemTree::CEntry::ToString()
 CFileSystemTree::CEntry::operator std::string() const{
-	// You code here
 	return this->ToString();
 }
 
+/// @brief Renames a CEntry and will resort the entry and its sibling
+/// @param name - new name for the entry
 bool CFileSystemTree::CEntry::Rename(const std::string & name) {
 
 	auto SptrCurrent = DImplementation->cNode.lock();
@@ -179,6 +189,7 @@ bool CFileSystemTree::CEntry::Rename(const std::string & name) {
 	return changeName;
 }
 
+/// @brief Returns the number of children of an entry
 size_t CFileSystemTree::CEntry::ChildCount() const {
 	if(Valid()){
 		auto SptrCurrent = DImplementation->cNode.lock();
@@ -195,6 +206,14 @@ size_t CFileSystemTree::CEntry::ChildCount() const {
 	}
 }
 
+///-------------------------------------------------------------------
+/// @brief Sets a existing entry to be the child of calling entry
+/// @param name - name of the entry to set be as child of calling entry
+/// @param iter - CEntryIterator that points to the entry to set as a child
+/// @returns - true if the child was set successfully, 
+///			   false if iter was not pointing to a valid entry 
+///			   and/or a child already exists with given name
+///-------------------------------------------------------------------
 bool CFileSystemTree::CEntry::SetChild(const std::string & name, CEntryIterator & iter) {
 	auto SptrCurrent = DImplementation->cNode.lock();
 	//checks if name already exists, if it does return false
@@ -204,8 +223,7 @@ bool CFileSystemTree::CEntry::SetChild(const std::string & name, CEntryIterator 
 		}
 	}
 	/*
-	If iter is to a nonvalid CEntry, creates a node with fileName of string name
-	and assigns that node to b the child of the current node and sorts
+	If iter is to a nonvalid CEntry, returns false
 	*/
 	if (iter.DImplementation->Iptr == nullptr) {
 		return false;
@@ -220,11 +238,12 @@ bool CFileSystemTree::CEntry::SetChild(const std::string & name, CEntryIterator 
 		ParentPtr->fileChild.erase(ParentPtr->fileChild.begin()+iter.DImplementation->iter);	
 		std::sort(SptrCurrent->fileChild.begin(), SptrCurrent->fileChild.end(), Compare);
 		return true;
-		
 	}
 	
 }
 
+///-------------------------------------------------------------------
+/// @brief	Adds a 
 bool CFileSystemTree::CEntry::AddChild(const std::string & path, bool addall) {
 	auto HoldPtr = DImplementation->cNode.lock();
 	std::string full;
@@ -240,9 +259,9 @@ bool CFileSystemTree::CEntry::AddChild(const std::string & path, bool addall) {
 	else{
 		full = path;
 	}
-	if (full.compare(0,1,"/")!=0){
-		full.insert(0, "/");
-	}
+	// if (full.compare(0,1,"/")!=0){
+	// 	full.insert(0, "/");
+	// }
 	CPath ThyPath(full);
 	std::string temp = std::string(ThyPath.NormalizePath());
 	if (temp.compare(0,1,"/")!=0){

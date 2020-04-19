@@ -26,3 +26,11 @@ struct termios saved_attributes;
 
 //Struct to check if valid directory is given
 struct stat dir;
+
+// Linux commands
+// void mkdir(const std::string &directory, CFileSystemTree &filetree);
+// void cd(const std::string &directory, CFileSystemTree &filetree);
+// void rm(const std::string &name, CFileSystemTree &filetree);
+// void mv(const std::string &to, const std::string &from, CFileSystemTree &filetree);
+// void cp(const std::string &to, const std::string &from, CFileSystemTree &filetree);
+// void ls(const std::string &directory, CFileSystemTree &filetree);

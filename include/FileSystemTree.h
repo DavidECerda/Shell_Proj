@@ -6,16 +6,15 @@
 #include <memory>
 #include <vector>
 
-///--------------------------------------------------------------
-/// @ brief A represention of a file system tree using 
+///-------------------------------------------------------------------
+/// A represention of a file system tree using 
 /// shared and weak pointers to connect the nodes which
 /// represent files or directories. Shared pointers point 
 /// down to children of a node and those children have weak
 /// pointers to the parent. This allows nodes to be deleted 
 /// and anything connected to that node downstream will be
 /// deleted as well.
-///--------------------------------------------------------------
-
+///--------------------------------------------------------------------
 class CFileSystemTree{
     protected:
         struct SImplementation;

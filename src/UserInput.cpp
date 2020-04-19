@@ -345,6 +345,7 @@ void UserInput::BackspaceKey(){
 /// @brief	Function to handle a character key
 ///			It will print the character and save it to input
 /// 		where the index for the current input is.
+/// @param  c - character key the user inputted
 void UserInput::CharacterKey(const char c){
 	state = specialKeys::CHAR;
 

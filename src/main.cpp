@@ -52,12 +52,14 @@ void set_input_mode (void){
 	tcsetattr (STDIN_FILENO, TCSAFLUSH, &tattr);
 };
 
+
 int main(int argc, char* argv[]){
 
 	bool Done = false;
 	std::string CurrentDirectory = "/";
 	CFileSystemTree TheTree;
 	std::string GivenDirectory(".");
+	
 	/*
 	if (argc > PATH_GIVEN) {
 		/*
@@ -127,7 +129,7 @@ int main(int argc, char* argv[]){
 		// For mv and cp
 		CPath DestElems;
 		std::string NormDest;
-		if (InputElements.size()==3){
+		if (InputElements.size()>=3){
 			if (InputElements[2].compare(0, 1, "/") == 0) {
 			CPath DestElems(InputElements[2]);
 			NormDest = std::string(DestElems.NormalizePath());
@@ -140,6 +142,7 @@ int main(int argc, char* argv[]){
 			}
 		}
 
+		std::cout <<"\n" << NormPath << " to " << NormDest << "\n";
 		if (InputElements[0] == "exit") {
 			Done = true;
 		}
